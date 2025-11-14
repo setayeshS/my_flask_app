@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}تماس با ما{% endblock %}
+{% block content %}
+<div class="page-content">
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B4513] via-[#9b5a2c] to-[#A0522D] text-white p-8 sm:p-12 shadow-xl mb-10 animate-[fadeIn_0.5s_ease-out]">
+        <div class="relative z-10">
+            <h1 class="text-2xl sm:text-3xl font-extrabold mb-2">با ما در ارتباط باشید</h1>
+            <p class="opacity-90">پیشنهاد، پرسش یا مشکلی دارید؟ خوشحال می‌شویم از شما بشنویم.</p>
+        </div>
+        <div class="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-white/10 blur-3xl"></div>
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+    </section>
+
+    <div class="grid grid-cols-1 gap-6">
+        <aside class="space-y-4">
+            <div class="bg-white/95 backdrop-blur rounded-2xl shadow-xl p-6">
+                <h3 class="font-bold mb-3">اطلاعات تماس</h3>
+                <ul class="space-y-2 text-slate-700">
+                    <li>📧 info@fashionstore.com</li>
+                    <li>📧 support@fashionstore.com</li>
+                    <li>📞 021-12345678</li>
+                    <li>📱 09123456789</li>
+                </ul>
+            </div>
+            <div class="bg-white/95 backdrop-blur rounded-2xl shadow-xl p-6">
+                <h3 class="font-bold mb-3">آدرس و ساعات کاری</h3>
+                <p class="text-slate-700">مشهد قاسم اباد</p>
+                <p class="text-slate-500 text-sm mb-3">کد پستی: 1234567890</p>
+                <div class="text-slate-700 space-y-1">
+                    <p>شنبه تا پنج‌شنبه: 9:00 - 18:00</p>
+                    <p>جمعه: 14:00 - 18:00</p>
+                </div>
+            </div>
+            
+        </aside>
+    </div>
+</div>
+{% endblock %}

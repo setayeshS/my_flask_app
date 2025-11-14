@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}اطلاعات ارسال - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="page-content">
+    <div class="shipping-header">
+        <h1>اطلاعات ارسال و تحویل</h1>
+        <p>همه چیز در مورد نحوه ارسال و دریافت سفارشات شما</p>
+    </div>
+    
+    <div class="shipping-content">
+        <div class="shipping-methods">
+            <h2>روش‌های ارسال</h2>
+            <div class="method-cards">
+                <div class="method-card">
+                    <div class="method-icon">🚚</div>
+                    <h3>ارسال عادی</h3>
+                    <div class="method-details">
+                        <p><strong>زمان تحویل:</strong> 3-5 روز کاری</p>
+                        <p><strong>هزینه:</strong> 25,000 تومان</p>
+                        <p><strong>پوشش:</strong> تمام نقاط کشور</p>
+                    </div>
+                </div>
+                
+                <div class="method-card featured">
+                    <div class="method-icon">⚡</div>
+                    <h3>ارسال سریع</h3>
+                    <div class="method-details">
+                        <p><strong>زمان تحویل:</strong> 1-2 روز کاری</p>
+                        <p><strong>هزینه:</strong> 45,000 تومان</p>
+                        <p><strong>پوشش:</strong> شهرهای بزرگ</p>
+                    </div>
+                    <span class="badge">پیشنهادی</span>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">🏪</div>
+                    <h3>تحویل در فروشگاه</h3>
+                    <div class="method-details">
+                        <p><strong>زمان تحویل:</strong> 1 روز کاری</p>
+                        <p><strong>هزینه:</strong> رایگان</p>
+                        <p><strong>پوشش:</strong> فقط تهران</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="free-shipping">
+            <h2>ارسال رایگان</h2>
+            <div class="free-shipping-info">
+                <div class="free-shipping-icon">🎁</div>
+                <div class="free-shipping-content">
+                    <h3>ارسال رایگان برای خریدهای بالای 500,000 تومان</h3>
+                    <p>برای سفارشات بالای 500,000 تومان، هزینه ارسال کاملاً رایگان است</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%"></div>
+                        <span class="progress-text">300,000 تومان تا ارسال رایگان</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="delivery-areas">
+            <h2>مناطق تحت پوشش</h2>
+            <div class="areas-grid">
+                <div class="area-section">
+                    <h3>شهرهای اصلی</h3>
+                    <ul>
+                        <li>تهران</li>
+                        <li>مشهد</li>
+                        <li>اصفهان</li>
+                        <li>شیراز</li>
+                        <li>تبریز</li>
+                        <li>کرج</li>
+                    </ul>
+                </div>
+                <div class="area-section">
+                    <h3>شهرهای متوسط</h3>
+                    <ul>
+                        <li>اهواز</li>
+                        <li>قم</li>
+                        <li>کرمانشاه</li>
+                        <li>ارومیه</li>
+                        <li>زاهدان</li>
+                        <li>یزد</li>
+                    </ul>
+                </div>
+                <div class="area-section">
+                    <h3>سایر شهرها</h3>
+                    <p>ارسال به سایر شهرها با هماهنگی قبلی انجام می‌شود</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tracking-info">
+            <h2>پیگیری سفارش</h2>
+            <div class="tracking-content">
+                <div class="tracking-steps">
+                    <div class="tracking-step completed">
+                        <div class="step-icon">📦</div>
+                        <div class="step-content">
+                            <h4>سفارش ثبت شد</h4>
+                            <p>سفارش شما با موفقیت ثبت شد</p>
+                        </div>
+                    </div>
+                    <div class="tracking-step completed">
+                        <div class="step-icon">🔍</div>
+                        <div class="step-content">
+                            <h4>در حال آماده‌سازی</h4>
+                            <p>محصولات شما در حال آماده‌سازی است</p>
+                        </div>
+                    </div>
+                    <div class="tracking-step active">
+                        <div class="step-icon">🚚</div>
+                        <div class="step-content">
+                            <h4>ارسال شد</h4>
+                            <p>سفارش شما ارسال شد</p>
+                        </div>
+                    </div>
+                    <div class="tracking-step">
+                        <div class="step-icon">✅</div>
+                        <div class="step-content">
+                            <h4>تحویل شد</h4>
+                            <p>سفارش شما تحویل داده شد</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracking-form">
+                    <h3>پیگیری سفارش</h3>
+                    <div class="form-group">
+                        <input type="text" id="trackingNumber" placeholder="شماره پیگیری سفارش">
+                        <button onclick="trackOrder()">پیگیری</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="return-policy">
+            <h2>سیاست بازگشت و تعویض</h2>
+            <div class="return-content">
+                <div class="return-item">
+                    <h3>🔄 تعویض</h3>
+                    <ul>
+                        <li>امکان تعویض تا 7 روز پس از تحویل</li>
+                        <li>محصول باید در شرایط اولیه باشد</li>
+                        <li>برچسب قیمت و بسته‌بندی اصلی حفظ شده باشد</li>
+                    </ul>
+                </div>
+                <div class="return-item">
+                    <h3>↩️ بازگشت</h3>
+                    <ul>
+                        <li>امکان بازگشت تا 14 روز پس از تحویل</li>
+                        <li>بازگشت وجه در صورت عدم رضایت</li>
+                        <li>هزینه بازگشت بر عهده مشتری</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-shipping">
+            <h2>سوالات مربوط به ارسال</h2>
+            <p>اگر سوالی در مورد ارسال و تحویل دارید، با ما تماس بگیرید:</p>
+            <div class="contact-methods">
+                <div class="contact-method">
+                    <span class="contact-icon">📞</span>
+                    <span>021-12345678</span>
+                </div>
+                <div class="contact-method">
+                    <span class="contact-icon">📧</span>
+                    <span>shipping@fashionstore.com</span>
+                </div>
+                <div class="contact-method">
+                    <span class="contact-icon">💬</span>
+                    <span>چت آنلاین</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function trackOrder() {
+    const trackingNumber = document.getElementById('trackingNumber').value;
+    if (trackingNumber) {
+        alert(`شماره پیگیری ${trackingNumber} در سیستم یافت نشد. لطفاً شماره صحیح را وارد کنید.`);
+    } else {
+        alert('لطفاً شماره پیگیری را وارد کنید');
+    }
+}
+</script>
+{% endblock %}

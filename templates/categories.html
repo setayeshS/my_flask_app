@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}دسته‌بندی محصولات - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="page-content">
+    <div class="categories-header">
+        <h1>دسته‌بندی محصولات</h1>
+        <p>محصولات ما را بر اساس نوع و سبک جستجو کنید</p>
+    </div>
+    
+    <div class="categories-grid">
+        <div class="category-card" onclick="filterProducts('all')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/placeholder.svg') }}" alt="همه محصولات">
+            </div>
+            <h3>همه محصولات</h3>
+            <p>مشاهده تمام محصولات</p>
+            <span class="product-count">{{ products|length }} محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('dress')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/dress.jpg') }}" alt="پیراهن">
+            </div>
+            <h3>پیراهن</h3>
+            <p>پیراهن‌های شیک و راحت</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('jacket')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/jacket1.svg') }}" alt="ژاکت">
+            </div>
+            <h3>ژاکت</h3>
+            <p>ژاکت‌های گرم و شیک</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('skirt')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/skirt1.svg') }}" alt="دامن">
+            </div>
+            <h3>دامن</h3>
+            <p>دامن‌های کوتاه و بلند</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('pants')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/jeans1.svg') }}" alt="شلوار">
+            </div>
+            <h3>شلوار</h3>
+            <p>شلوارهای راحت و شیک</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('coat')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/coat1.svg') }}" alt="کاپشن">
+            </div>
+            <h3>کاپشن</h3>
+            <p>کاپشن‌های زمستانی</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+        
+        <div class="category-card" onclick="filterProducts('tshirt')">
+            <div class="category-image">
+                <img src="{{ url_for('static', filename='image/tshirt1.svg') }}" alt="تی‌شرت">
+            </div>
+            <h3>تی‌شرت</h3>
+            <p>تی‌شرت‌های ساده و راحت</p>
+            <span class="product-count">1 محصول</span>
+        </div>
+    </div>
+    
+    <div class="filtered-products" id="filteredProducts" style="display: none;">
+        <h2>محصولات فیلتر شده</h2>
+        <div class="products" id="productsContainer">
+            <!-- Products will be loaded here via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+function filterProducts(category) {
+    const products = {{ products|tojson }};
+    const filteredProducts = products.filter(product => {
+        if (category === 'all') return true;
+        return product.name.toLowerCase().includes(category) || 
+               product.image.includes(category);
+    });
+    
+    displayFilteredProducts(filteredProducts);
+}
+
+function displayFilteredProducts(products) {
+    const container = document.getElementById('productsContainer');
+    const section = document.getElementById('filteredProducts');
+    
+    if (products.length === 0) {
+        container.innerHTML = '<p>محصولی یافت نشد</p>';
+    } else {
+        container.innerHTML = products.map(product => `
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="/static/${product.image}" alt="${product.name}">
+                    <div class="product-overlay">
+                        <button class="btn-view" onclick="window.location.href='/product/${products.indexOf(product)}'">مشاهده جزئیات</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">${product.price}</div>
+                    <button class="btn-add-to-cart" onclick="addToCart('${product.name}', '${product.price}')">افزودن به سبد خرید</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    section.style.display = 'block';
+    section.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+{% endblock %}

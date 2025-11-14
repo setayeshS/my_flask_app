@@ -1,0 +1,5 @@
+Flask==2.3.3
+python-telegram-bot==20.7
+SQLAlchemy==2.0.32
+psycopg2-binary==2.9.9
+PyMySQL==1.1.1

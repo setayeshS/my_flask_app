@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}راهنمای سایز - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="page-content">
+    <div class="size-guide-header">
+        <h1>راهنمای انتخاب سایز</h1>
+        <p>برای انتخاب سایز مناسب، اندازه‌های خود را با جدول زیر مقایسه کنید</p>
+    </div>
+    
+    <div class="size-guide-content">
+        <div class="measurement-guide">
+            <h2>نحوه اندازه‌گیری</h2>
+            <div class="measurement-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>دور سینه</h3>
+                        <p>دور سینه را در پهن‌ترین قسمت اندازه بگیرید</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>دور کمر</h3>
+                        <p>دور کمر را در باریک‌ترین قسمت اندازه بگیرید</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>دور باسن</h3>
+                        <p>دور باسن را در پهن‌ترین قسمت اندازه بگیرید</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="size-tables">
+            <div class="size-table-section">
+                <h3>جدول سایزهای زنانه</h3>
+                <div class="table-container">
+                    <table class="size-table">
+                        <thead>
+                            <tr>
+                                <th>سایز</th>
+                                <th>دور سینه (سانتی‌متر)</th>
+                                <th>دور کمر (سانتی‌متر)</th>
+                                <th>دور باسن (سانتی‌متر)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S</td>
+                                <td>84-88</td>
+                                <td>64-68</td>
+                                <td>88-92</td>
+                            </tr>
+                            <tr>
+                                <td>M</td>
+                                <td>88-92</td>
+                                <td>68-72</td>
+                                <td>92-96</td>
+                            </tr>
+                            <tr>
+                                <td>L</td>
+                                <td>92-96</td>
+                                <td>72-76</td>
+                                <td>96-100</td>
+                            </tr>
+                            <tr>
+                                <td>XL</td>
+                                <td>96-100</td>
+                                <td>76-80</td>
+                                <td>100-104</td>
+                            </tr>
+                            <tr>
+                                <td>XXL</td>
+                                <td>100-104</td>
+                                <td>80-84</td>
+                                <td>104-108</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="size-table-section">
+                <h3>جدول سایزهای مردانه</h3>
+                <div class="table-container">
+                    <table class="size-table">
+                        <thead>
+                            <tr>
+                                <th>سایز</th>
+                                <th>دور سینه (سانتی‌متر)</th>
+                                <th>دور کمر (سانتی‌متر)</th>
+                                <th>دور باسن (سانتی‌متر)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S</td>
+                                <td>88-92</td>
+                                <td>76-80</td>
+                                <td>88-92</td>
+                            </tr>
+                            <tr>
+                                <td>M</td>
+                                <td>92-96</td>
+                                <td>80-84</td>
+                                <td>92-96</td>
+                            </tr>
+                            <tr>
+                                <td>L</td>
+                                <td>96-100</td>
+                                <td>84-88</td>
+                                <td>96-100</td>
+                            </tr>
+                            <tr>
+                                <td>XL</td>
+                                <td>100-104</td>
+                                <td>88-92</td>
+                                <td>100-104</td>
+                            </tr>
+                            <tr>
+                                <td>XXL</td>
+                                <td>104-108</td>
+                                <td>92-96</td>
+                                <td>104-108</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="size-calculator">
+            <h3>محاسبه‌گر سایز</h3>
+            <p>اندازه‌های خود را وارد کنید تا سایز مناسب را پیشنهاد دهیم</p>
+            <div class="calculator-form">
+                <div class="input-group">
+                    <label>دور سینه (سانتی‌متر):</label>
+                    <input type="number" id="chest" placeholder="مثال: 90">
+                </div>
+                <div class="input-group">
+                    <label>دور کمر (سانتی‌متر):</label>
+                    <input type="number" id="waist" placeholder="مثال: 70">
+                </div>
+                <div class="input-group">
+                    <label>دور باسن (سانتی‌متر):</label>
+                    <input type="number" id="hips" placeholder="مثال: 95">
+                </div>
+                <div class="input-group">
+                    <label>جنسیت:</label>
+                    <select id="gender">
+                        <option value="female">زن</option>
+                        <option value="male">مرد</option>
+                    </select>
+                </div>
+                <button onclick="calculateSize()" class="btn-calculate">محاسبه سایز</button>
+            </div>
+            <div class="result" id="sizeResult" style="display: none;">
+                <h4>سایز پیشنهادی شما: <span id="suggestedSize"></span></h4>
+                <p id="sizeNote"></p>
+            </div>
+        </div>
+        
+        <div class="size-tips">
+            <h3>نکات مهم</h3>
+            <ul class="tips-list">
+                <li>اندازه‌گیری را روی لباس نازک انجام دهید</li>
+                <li>نوار اندازه‌گیری را محکم اما نه خیلی سفت نگه دارید</li>
+                <li>برای دقت بیشتر، اندازه‌گیری را دو بار انجام دهید</li>
+                <li>اگر بین دو سایز هستید، سایز بزرگ‌تر را انتخاب کنید</li>
+                <li>سایزهای مختلف برندها ممکن است متفاوت باشد</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateSize() {
+    const chest = parseInt(document.getElementById('chest').value);
+    const waist = parseInt(document.getElementById('waist').value);
+    const hips = parseInt(document.getElementById('hips').value);
+    const gender = document.getElementById('gender').value;
+    
+    if (!chest || !waist || !hips) {
+        alert('لطفاً تمام فیلدها را پر کنید');
+        return;
+    }
+    
+    let suggestedSize = '';
+    let note = '';
+    
+    if (gender === 'female') {
+        if (chest <= 88 && waist <= 68 && hips <= 92) {
+            suggestedSize = 'S';
+        } else if (chest <= 92 && waist <= 72 && hips <= 96) {
+            suggestedSize = 'M';
+        } else if (chest <= 96 && waist <= 76 && hips <= 100) {
+            suggestedSize = 'L';
+        } else if (chest <= 100 && waist <= 80 && hips <= 104) {
+            suggestedSize = 'XL';
+        } else {
+            suggestedSize = 'XXL';
+        }
+    } else {
+        if (chest <= 92 && waist <= 80 && hips <= 92) {
+            suggestedSize = 'S';
+        } else if (chest <= 96 && waist <= 84 && hips <= 96) {
+            suggestedSize = 'M';
+        } else if (chest <= 100 && waist <= 88 && hips <= 100) {
+            suggestedSize = 'L';
+        } else if (chest <= 104 && waist <= 92 && hips <= 104) {
+            suggestedSize = 'XL';
+        } else {
+            suggestedSize = 'XXL';
+        }
+    }
+    
+    if (chest > 104 || waist > 96 || hips > 108) {
+        note = 'توجه: ممکن است نیاز به سایز سفارشی داشته باشید. با ما تماس بگیرید.';
+    } else {
+        note = 'این سایز بر اساس اندازه‌های شما پیشنهاد شده است.';
+    }
+    
+    document.getElementById('suggestedSize').textContent = suggestedSize;
+    document.getElementById('sizeNote').textContent = note;
+    document.getElementById('sizeResult').style.display = 'block';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}خانه - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="hero-section mt-4">
+    <h1 class="animate-[fadeIn_0.6s_ease-out]">به فروشگاه لباس قهوه‌ای خوش آمدید</h1>
+    <p class="animate-[fadeIn_0.6s_ease-out_0.2s_both]">لباس‌های شیک و باکیفیت با بهترین قیمت</p>
+</div>
+
+<div class="products">
+    {% for product in products %}
+    <div class="product-card group">
+        <div class="product-image">
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="transition-transform duration-300">
+            <a class="product-overlay" href="{{ url_for('product_detail', product_id=loop.index0) }}" style="text-decoration:none;">
+                <button class="btn-view">مشاهده جزئیات</button>
+            </a>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-description line-clamp-2">{{ product.description }}</p>
+            <div class="product-price">{{ product.price }}</div>
+            <button class="btn-add-to-cart">افزودن به سبد خرید</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

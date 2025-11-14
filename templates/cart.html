@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}سبد خرید - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="page-content">
+    <div class="cart-header">
+        <h1>سبد خرید شما</h1>
+        <p>محصولات انتخابی خود را بررسی کنید</p>
+    </div>
+    
+    <div class="cart-content">
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be loaded here via JavaScript -->
+            <div class="empty-cart" id="emptyCart">
+                <div class="empty-cart-icon">🛒</div>
+                <h3>سبد خرید شما خالی است</h3>
+                <p>محصولات مورد علاقه خود را به سبد خرید اضافه کنید</p>
+                <a href="{{ url_for('index') }}" class="btn-shop-now">شروع خرید</a>
+            </div>
+        </div>
+        
+        <div class="cart-summary">
+            <h3>خلاصه سفارش</h3>
+            <div class="summary-item">
+                <span>جمع کل:</span>
+                <span id="subtotal">0 تومان</span>
+            </div>
+            <div class="summary-item">
+                <span>هزینه ارسال:</span>
+                <span id="shipping">رایگان</span>
+            </div>
+            <div class="summary-item total">
+                <span>مبلغ نهایی:</span>
+                <span id="total">0 تومان</span>
+            </div>
+            
+            <div class="discount-code">
+                <h4>کد تخفیف</h4>
+                <div class="discount-input">
+                    <input type="text" id="discountCode" placeholder="کد تخفیف خود را وارد کنید">
+                    <button onclick="applyDiscount()">اعمال</button>
+                </div>
+            </div>
+            
+            <button class="btn-checkout" onclick="proceedToCheckout()">
+                ادامه فرآیند خرید
+            </button>
+            
+            <div class="payment-methods">
+                <h4>روش‌های پرداخت</h4>
+                <div class="payment-icons">
+                    <span class="payment-icon">💳</span>
+                    <span class="payment-icon">🏦</span>
+                    <span class="payment-icon">📱</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recommended-products">
+        <h2>محصولات پیشنهادی</h2>
+        <div class="products">
+            {% for product in recommended_products %}
+            <div class="product-card-small">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+                <h4>{{ product.name }}</h4>
+                <p>{{ product.price }}</p>
+                <button class="btn-add-small" onclick="addToCart({ name: '{{ product.name }}', price: '{{ product.price }}', image: '{{ product.image }}', quantity: 1 })">
+                    افزودن
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Cart functionality
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function loadCart() {
+    // Ensure we read the latest cart from storage each time
+    try { cart = JSON.parse(localStorage.getItem('cart')) || []; } catch (_) { cart = []; }
+    const cartItems = document.getElementById('cartItems');
+    const emptyCart = document.getElementById('emptyCart');
+    
+    if (cart.length === 0) {
+        emptyCart.style.display = 'block';
+        cartItems.innerHTML = '';
+        cartItems.appendChild(emptyCart);
+        updateSummary();
+        return;
+    }
+    
+    emptyCart.style.display = 'none';
+    cartItems.innerHTML = cart.map((item, index) => {
+        const unitPrice = parseInt(String(item.price).replace(/[^\d]/g, '')) || 0;
+        const lineTotal = unitPrice * (parseInt(item.quantity || 1, 10));
+        return `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="/static/${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-details">
+                <h4>${item.name}</h4>
+                <p>سایز: ${item.size || 'L'}</p>
+                <p>رنگ: ${item.color || 'قهوه‌ای'}</p>
+            </div>
+            <div class="item-quantity">
+                <button type="button" class="qty-btn" data-action="minus" data-index="${index}" onclick="updateQuantity(${index}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button type="button" class="qty-btn" data-action="plus" data-index="${index}" onclick="updateQuantity(${index}, 1)">+</button>
+            </div>
+            <div class="item-price">
+                ${formatPrice(lineTotal)}
+                <div class="text-xs text-slate-500">(قیمت واحد: ${formatPrice(unitPrice)})</div>
+            </div>
+            <div class="item-actions">
+                <button type="button" class="btn-remove" data-action="remove" data-index="${index}" onclick="removeFromCart(${index})">حذف</button>
+            </div>
+        </div>
+    `;}).join('');
+    
+    updateSummary();
+}
+
+function updateQuantity(index, change) {
+    const current = parseInt(cart[index].quantity || 1, 10);
+    const next = Math.max(1, current + change);
+    cart[index].quantity = next;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadCart();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadCart();
+}
+
+function updateSummary() {
+    const subtotal = cart.reduce((sum, item) => {
+        const unit = parseInt(String(item.price).replace(/[^\d]/g, '')) || 0;
+        const qty = Math.max(1, parseInt(item.quantity || 1, 10));
+        return sum + (unit * qty);
+    }, 0);
+    document.getElementById('subtotal').textContent = formatPrice(subtotal);
+    document.getElementById('total').textContent = formatPrice(subtotal);
+}
+
+function applyDiscount() {
+    const code = document.getElementById('discountCode').value;
+    if (code === 'WELCOME10') {
+        alert('کد تخفیف 10% اعمال شد!');
+        // Apply 10% discount logic here
+    } else {
+        alert('کد تخفیف نامعتبر است');
+    }
+}
+
+function proceedToCheckout() {
+    if (cart.length === 0) {
+        alert('سبد خرید شما خالی است');
+        return;
+    }
+    // Prepare payload with only required fields
+    const items = cart.map(it => ({ name: it.name, quantity: it.quantity }));
+    fetch('{{ url_for('checkout') }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+    }).then(async (res) => {
+        if (res.status === 401) {
+            window.location.href = '{{ url_for('login') }}';
+            return;
+        }
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            alert('خطا در ثبت سفارش. لطفاً دوباره تلاش کنید');
+            return;
+        }
+        // Clear cart on success and redirect to a simple thank-you
+        localStorage.removeItem('cart');
+        cart = [];
+        loadCart();
+        alert('سفارش با موفقیت ثبت شد');
+    }).catch(() => {
+        alert('مشکلی در ارتباط با سرور پیش آمد');
+    });
+}
+
+// Load cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+    const container = document.getElementById('cartItems');
+    container.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        const action = btn.getAttribute('data-action');
+        if (Number.isNaN(index)) return;
+        if (action === 'plus') {
+            updateQuantity(index, 1);
+        } else if (action === 'minus') {
+            updateQuantity(index, -1);
+        } else if (action === 'remove') {
+            removeFromCart(index);
+        }
+    });
+});
+
+// Helpers
+function formatPrice(num) {
+    try {
+        const n = parseInt(num || 0, 10);
+        return n.toLocaleString('fa-IR') + ' تومان';
+    } catch (_) {
+        return (Number(num) || 0).toLocaleString('fa-IR') + ' تومان';
+    }
+}
+</script>
+{% endblock %}

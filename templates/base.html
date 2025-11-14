@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}فروشگاه لباس{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#8B4513', secondary: '#A0522D' } } } };
+    </script>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="animate-[fadeIn_0.6s_ease-out]">
+        <h1>فروشگاه لباس قهوه‌ای</h1>
+    </header>
+    <nav class="sticky top-0 z-40"> 
+        <a href="{{ url_for('index') }}">خانه</a>
+        
+        
+        <a href="{{ url_for('contact') }}">تماس با ما</a>
+        <a href="{{ url_for('cart') }}" class="cart-link">🛒 سبد خرید</a>
+        {% if session.get('user_id') %}
+        <span class="text-white mx-4">{{ session.get('username') }}</span>
+        <a href="{{ url_for('logout') }}" class="ml-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-2xl transition">خروج</a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="ml-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-2xl transition">ورود</a>
+        <a href="{{ url_for('signup') }}" class="ml-2 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-2xl transition">ثبت‌نام</a>
+        {% endif %}
+    </nav>
+
+    <main class="container mx-auto px-4 flex-1">
+        {# Flash messages #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="fixed top-8 left-1/2 -translate-x-1/2 z-50 space-y-3 w-full px-4 flex flex-col items-center">
+            {% for category, message in messages %}
+            <div data-flash class="w-full max-w-xl bg-green-600/95 text-white backdrop-blur rounded-2xl shadow-2xl p-5 pr-12 relative animate-[flashIn_0.35s_ease-out]">
+                <span class="text-base sm:text-lg font-semibold">{{ message }}</span>
+                <button class="flash-close absolute top-3 left-3 text-white/80 hover:text-white text-lg leading-none">✕</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-10 animate-[fadeIn_0.6s_ease-out]">
+        تمامی حقوق محفوظ است © 2025
+    </footer>
+    
+    <script>
+        // Cart state helpers
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem('cart')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function normalizePriceToText(priceText) {
+            // Keep original formatted price text
+            return priceText;
+        }
+
+        // Add to cart functionality (overloaded)
+        // Supports: addToCart(name, price, image, quantity, size, color)
+        // Or: addToCart({ name, price, image, quantity, size, color })
+        function addToCart(nameOrObj, price, image, quantity = 1, size = 'L', color = 'قهوه‌ای') {
+            let item;
+            if (typeof nameOrObj === 'object') {
+                item = { ...nameOrObj };
+            } else {
+                item = { name: nameOrObj, price, image, quantity, size, color };
+            }
+
+            // Ensure required fields
+            item.quantity = Math.max(1, parseInt(item.quantity || 1, 10));
+            item.size = item.size || 'L';
+            item.color = item.color || 'قهوه‌ای';
+            item.price = normalizePriceToText(item.price);
+            // Fallback for image: try to keep as relative path under /static
+            if (!item.image) {
+                item.image = '';
+            }
+
+            const cart = getCart();
+            const existingIndex = cart.findIndex(ci => ci.name === item.name && ci.size === item.size && ci.color === item.color);
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += item.quantity;
+            } else {
+                cart.push({ name: item.name, price: item.price, image: item.image, quantity: item.quantity, size: item.size, color: item.color });
+            }
+            saveCart(cart);
+
+            // Create a simple notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #8B4513, #A0522D);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = `${item.name} به سبد خرید اضافه شد!`;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Add click event listeners to add to cart buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productCard = this.closest('.product-card');
+                    const productName = productCard.querySelector('.product-name')?.textContent?.trim() || '';
+                    const productPrice = productCard.querySelector('.product-price')?.textContent?.trim() || '0 تومان';
+                    const imgEl = productCard.querySelector('img');
+                    let imagePath = '';
+                    if (imgEl && imgEl.getAttribute('src')) {
+                        // If full /static/... provided, strip prefix for cart rendering consistency in cart.html
+                        const src = imgEl.getAttribute('src');
+                        imagePath = src.startsWith('/static/') ? src.replace('/static/', '') : src.replace(/^.*\/static\//, '');
+                    }
+                    addToCart({ name: productName, price: productPrice, image: imagePath, quantity: 1 });
+                });
+            });
+            
+            // دکمه مشاهده جزئیات اکنون لینک مستقیم به صفحه محصول است
+        });
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            @keyframes fadeIn { from { opacity:0; transform: translateY(8px)} to { opacity:1; transform: translateY(0)} }
+            @keyframes flashIn { from { opacity: 0; transform: translateY(-8px) scale(0.98) } to { opacity: 1; transform: translateY(0) scale(1) } }
+            @keyframes flashOut { from { opacity: 1; transform: translateY(0) scale(1) } to { opacity: 0; transform: translateY(-10px) scale(0.98) } }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-dismiss flash messages with exit animation
+        (function(){
+            const flashes = document.querySelectorAll('[data-flash]');
+            flashes.forEach((el) => {
+                const removeWithAnim = () => {
+                    el.style.animation = 'flashOut 0.35s ease-in forwards';
+                    setTimeout(() => {
+                        el.remove();
+                    }, 350);
+                };
+                const closeBtn = el.querySelector('.flash-close');
+                if (closeBtn) closeBtn.addEventListener('click', removeWithAnim);
+                setTimeout(removeWithAnim, 3800);
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - فروشگاه لباس{% endblock %}
+{% block content %}
+<div class="page-content product-detail-page">
+    <div class="product-detail">
+        <div class="product-images animate-[fadeIn_0.6s_ease-out]">
+            <div class="main-image">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" id="mainProductImage">
+            </div>
+            <div class="thumbnail-images">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="thumbnail active" onclick="changeMainImage(this)">
+            </div>
+        </div>
+        
+        <div class="product-info animate-[fadeIn_0.6s_ease-out_0.1s_both]">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="product-rating">
+                <div class="stars">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+                <span class="rating-text">(4.5 از 5 - 23 نظر)</span>
+            </div>
+            
+            <div class="product-price-large">{{ product.price }}</div>
+            
+            <div class="product-description">
+                <h3>توضیحات محصول</h3>
+                <p>{{ product.description }}</p>
+                <ul class="product-features">
+                    <li>جنس: 100% پنبه</li>
+                    <li>قابل شستشو در ماشین لباسشویی</li>
+                    <li>رنگ ثابت و مقاوم در برابر شستشو</li>
+                    <li>طراحی شیک و مدرن</li>
+                </ul>
+            </div>
+            
+            <div class="size-selection">
+                <h3>انتخاب سایز</h3>
+                <div class="size-options">
+                    <button class="size-btn" data-size="S">S</button>
+                    <button class="size-btn" data-size="M">M</button>
+                    <button class="size-btn active" data-size="L">L</button>
+                    <button class="size-btn" data-size="XL">XL</button>
+                    <button class="size-btn" data-size="XXL">XXL</button>
+                </div>
+                <a href="{{ url_for('size_guide') }}" class="size-guide-link">راهنمای سایز</a>
+            </div>
+            
+            <div class="quantity-selection">
+                <h3>تعداد</h3>
+                <div class="quantity-controls">
+                    <button class="qty-btn" onclick="decreaseQuantity()">-</button>
+                    <input type="number" id="quantity" value="1" min="1" max="10">
+                    <button class="qty-btn" onclick="increaseQuantity()">+</button>
+                </div>
+            </div>
+            
+            <div class="product-actions">
+                <div class="flex gap-4 w-full">
+                    <button type="button" class="btn-add-to-cart-large" onclick="addCurrentProductToCart(false)">افزودن به سبد خرید</button>
+                    <button type="button" class="btn-buy-now" onclick="addCurrentProductToCart(true)">خرید فوری</button>
+                </div>
+            </div>
+            
+            <div class="product-shipping">
+                <div class="shipping-info">
+                    <span class="shipping-icon">🚚</span>
+                    <span>ارسال رایگان برای خریدهای بالای 500,000 تومان</span>
+                </div>
+                <div class="shipping-info">
+                    <span class="shipping-icon">⏰</span>
+                    <span>ارسال در 24 ساعت</span>
+                </div>
+                <div class="shipping-info">
+                    <span class="shipping-icon">🔄</span>
+                    <span>امکان تعویض تا 7 روز</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="related-products">
+        <h2>محصولات مشابه</h2>
+        <div class="products-grid">
+            {% for related_product in related_products %}
+            <div class="product-card-small">
+                <img src="{{ url_for('static', filename=related_product.image) }}" alt="{{ related_product.name }}">
+                <h4>{{ related_product.name }}</h4>
+                <p>{{ related_product.price }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mt-10 grid gap-6">
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-xl font-bold text-[#8B4513] mb-4">ثبت نظر شما</h3>
+            {% if not session.get('user_id') %}
+            <div class="text-sm text-gray-600">برای ثبت نظر لطفاً <a href="{{ url_for('login') }}" class="text-[#8B4513] underline">وارد شوید</a>.</div>
+            {% else %}
+            <form method="post" action="{{ url_for('submit_review', product_id=product_id) }}" class="grid gap-4">
+                <div>
+                    <label class="block mb-1">امتیاز</label>
+                    <select name="rating" class="border-2 border-gray-200 rounded-xl px-4 py-2">
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-1">نظر شما</label>
+                    <textarea name="comment" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3" rows="3"></textarea>
+                </div>
+                <button class="bg-[#8B4513] hover:bg-[#A0522D] text-white px-6 py-3 rounded-xl w-fit">ارسال نظر</button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-xl font-bold text-[#8B4513] mb-4">نظرات کاربران</h3>
+            <div class="grid gap-4">
+                {% for r in reviews %}
+                <div class="border border-gray-100 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold">{{ r['username'] }}</span>
+                        <span class="text-yellow-500">{{ '★' * r['rating'] }}{{ '☆' * (5 - r['rating']) }}</span>
+                    </div>
+                    {% if r['comment'] %}
+                    <p class="text-sm text-gray-700 mt-2">{{ r['comment'] }}</p>
+                    {% endif %}
+                    <div class="text-xs text-gray-400 mt-1">{{ r['created_at'] }}</div>
+                </div>
+                {% else %}
+                <div class="text-sm text-gray-600">هنوز نظری ثبت نشده است.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function changeMainImage(el) {
+    const src = el.getAttribute('src');
+    document.getElementById('mainProductImage').src = src;
+    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function increaseQuantity() {
+    const qty = document.getElementById('quantity');
+    if (qty.value < 10) {
+        qty.value = parseInt(qty.value) + 1;
+        document.getElementById('orderQty').value = qty.value;
+    }
+}
+
+function decreaseQuantity() {
+    const qty = document.getElementById('quantity');
+    if (qty.value > 1) {
+        qty.value = parseInt(qty.value) - 1;
+        document.getElementById('orderQty').value = qty.value;
+    }
+}
+
+function buyNow() {
+    addCurrentProductToCart(true);
+}
+
+// Size selection
+document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+function getActiveSize() {
+    const active = document.querySelector('.size-btn.active');
+    return active ? active.getAttribute('data-size') : 'L';
+}
+
+function addCurrentProductToCart(redirectToCart) {
+    const qtyInput = document.getElementById('quantity');
+    const qty = Math.max(1, Math.min(10, parseInt(qtyInput?.value || '1', 10)));
+    const size = getActiveSize();
+    const name = "{{ product.name }}";
+    const price = "{{ product.price }}";
+    const image = "{{ product.image }}";
+    addToCart({ name, price, image, quantity: qty, size, color: 'قهوه‌ای' });
+    if (redirectToCart) {
+        window.location.href = "{{ url_for('cart') }}";
+    }
+}
+</script>
+{% endblock %}
